@@ -7,11 +7,12 @@ const config = require("config");
 
 const { createService } = require("@articles-searcher/api-service");
 const {
-  createModel: createCrossrefModel
+  createModel: createCrossrefModel,
 } = require("@articles-searcher/crossref-model");
 const {
-  createModel: createScopusModel
+  createModel: createScopusModel,
 } = require("@articles-searcher/scopus-model");
+const { createModel: createWOSModel } = require("@articles-searcher/wos-model");
 
 const indexRouter = require("./routes/index");
 
@@ -33,24 +34,30 @@ const crossrefModel = createCrossrefModel({
   agent: {
     name: config.crossref.agentName,
     version: config.crossref.agentVersion,
-    mailTo: config.crossref.mailTo
-  }
+    mailTo: config.crossref.mailTo,
+  },
 });
 createService(app, crossrefModel, "/crossref");
 
 const scopusModel = createScopusModel({
   rows: config.scopus.rows,
-  apiKey: config.scopus.apiKey
+  apiKey: config.scopus.apiKey,
 });
 createService(app, scopusModel, "/scopus");
 
+const wosModel = createWOSModel({
+  rows: config.wos.rows,
+  credentials: config.wos.credentials,
+});
+createService(app, wosModel, "/wos");
+
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
