@@ -11,7 +11,7 @@
   "scopus": {
     "rows": 10,
     "apiKey": "apiKey"
-  }
+  },
   
   "wos": {
     "rows": 10,
