@@ -76,7 +76,8 @@
 | `year`                 | Cover date year.                                             |
 | `issn`                 | ISSN or eISSN. Be sure to include the hyphen.                |
 
-Для ScopusAPI доступен запрос для получения аффилиаций по идентификатору статьи.
+Для ScopusAPI доступны дополнительные методы:
 
 - Список авторов с аффилиациями: **GET http://{домен}:{порт}/scopus/affiliations/{doi}**
 - Список авторов с полными данными аффилиаций: **GET http://{домен}:{порт}/scopus/full/affiliations/{doi}**
+- Поиск цитирующих статей по DOI работы: **GET http://{домен}:{порт}/scopus/citing?doi={doi}&start={смещение}**
