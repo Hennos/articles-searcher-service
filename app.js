@@ -1,29 +1,32 @@
-const createError = require("http-errors");
-const express = require("express");
-const path = require("path");
-const cookieParser = require("cookie-parser");
-const logger = require("morgan");
-const config = require("config");
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const config = require('config');
 
-const { createService } = require("@articles-searcher/api-service");
+const { createService } = require('@articles-searcher/api-service');
 const {
   createModel: createCrossrefModel,
-} = require("@articles-searcher/crossref-model");
+} = require('@articles-searcher/crossref-model');
 const {
   createModel: createScopusModel,
-} = require("@articles-searcher/scopus-model");
-const { createModel: createWOSModel } = require("@articles-searcher/wos-model");
+} = require('@articles-searcher/scopus-model');
+const { createModel: createWOSModel } = require('@articles-searcher/wos-model');
+const {
+  createModel: createRISCModel,
+} = require('@articles-searcher/risc-model');
 
-const indexRouter = require("./routes/index");
+const indexRouter = require('./routes/index');
 
 const app = express();
 
-app.use(logger("dev"));
+app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.use("/", indexRouter);
+app.use('/', indexRouter);
 
 const crossrefModel = createCrossrefModel({
   rows: config.crossref.rows,
@@ -33,19 +36,24 @@ const crossrefModel = createCrossrefModel({
     mailTo: config.crossref.mailTo,
   },
 });
-createService(app, crossrefModel, "/crossref");
+createService(app, crossrefModel, '/crossref');
 
 const scopusModel = createScopusModel({
   rows: config.scopus.rows,
   apiKey: config.scopus.apiKey,
 });
-createService(app, scopusModel, "/scopus");
+createService(app, scopusModel, '/scopus');
 
 const wosModel = createWOSModel({
   rows: config.wos.rows,
   credentials: config.wos.credentials,
 });
-createService(app, wosModel, "/wos");
+createService(app, wosModel, '/wos');
+
+const riscModel = createRISCModel({
+  userCode: config.risc.userCode,
+});
+createService(app, riscModel, '/risc');
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
